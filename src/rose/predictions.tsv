@@ -8,7 +8,7 @@ P06	nil	null	0	function
 P07	(1,2,3)	cons	3	function
 P08	empty	symbol	none	special-operator
 P09	nil	null	0	special-operator
-P10	6	integer	none	special-operator
+P10	30	integer	none	special-operator
 P11	ps3-twice	symbol	none	macro
 P12	(3,2,1)	cons	3	special-operator
 P13	(2,0,1)	cons	3	function

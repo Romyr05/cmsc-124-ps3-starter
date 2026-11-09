@@ -41,6 +41,8 @@ The head `and` short-circuits, which means it stops at the first false subform i
 ## P10
 The head is `progn`, a special operator that evaluates its subforms in order and returns the value of the last one. `defvar` defines `*ps3-rate*` globally as 2, and the `let` creates a new binding of 10 that only exists in the text of the `let` form. `ps3-scale` is defined outside the `let`, so it still sees the global value 2, and the result is 3 * 2 = 6, which is an integer with length `none`. 
 
+I predicted the kind, length, and operator right, but my value was 6 and CLISP printed 30. I read the `let` binding as lexical, when `defvar` makes `*ps3-rate*` special, so the `let` rebinding is dynamic and `ps3-scale` sees 10 when it is called.
+
 ## P11
 `defun` is a macro, and its value is the function’s name as a symbol, which is ps3-twice. The kind then follows as `symbol` and length as `none`.
 
