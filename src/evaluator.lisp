@@ -91,5 +91,27 @@ CLOSURE is not a closure, and when the argument count does not match."
 
 Order the branches with care. NIL is a symbol as well as the empty list, and a
 number is not a cons, so the atom tests come before the list tests."
-  (declare (ignore expr env))
-  (error "eval-expr is not implemented"))
+  (cond 
+    ;; expr := number
+    ((numberp expr) expr)                                   
+
+    ;; expr := symbol
+    ((symbolp expr) (lookup expr env))                      
+
+    ;; expr := (+ expr expr) | (- expr expr) | (* expr expr) 
+    ((and (consp expr) (member (car expr) '(+ - *)))        
+      (apply-op (car expr) 
+                (eval-operands (cdr expr) env)))
+
+    ;; expr := (let ((name expr) ...) body)
+    ((and (consp expr) (eq (car expr) 'let))                
+      (eval-let expr env))
+
+    ;; expr := (lambda (name ...) body)
+    ((and (consp expr) (eq (car expr) 'lambda))             
+      (make-closure (second expr) (third expr) env))
+
+    ;; expr := (operator-expr argument-expr ...)
+    ((consp expr)                                           
+      (apply-closure (eval-expr (car expr) env)
+                      (eval-operands (cdr expr) env)))))
