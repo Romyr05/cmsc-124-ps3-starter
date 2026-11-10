@@ -6,7 +6,7 @@ Problem Set 3. The assignment manual defines the work and the submission rules.
 
 ## Pair
 
-- Full Name (`username`)
+- John Romyr Lopez (`Romyr05`)
 - Rose Antonette Kaindoy (`rskaindoy`)
   
 ## Layout
