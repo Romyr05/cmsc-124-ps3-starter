@@ -36,7 +36,7 @@ The leading `'` is read as `(quote (+ 1 2))`, and `quote` is a special operator 
 `if` is a special operator, so it only evaluates the branch it picks. `(null '())` is true, so it returns the quoted symbol `empty` and never touches `'full`.
 
 ## P09
-`and` stops at the first false value from left to right, so it returns `nil` and never reaches 3. It is a macro in the standard, but CLISP also implements it as a special operator, which the course checks first.
+`and` stops at the first false value from left to right, so it returns `nil` and never reaches 3. It is a macro in the standard, but CLISP also implements it as a special operator.
 
 ## P10
 `progn` is a special operator that runs each subform in order and returns the last one. `defvar` makes `*ps3-rate*` special, so the `let` rebinds it dynamically and `ps3-scale` sees 10 while it runs. That gives 3 * 10 = 30, an integer.
