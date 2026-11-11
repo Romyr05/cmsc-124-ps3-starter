@@ -24,6 +24,11 @@ that captures the defining environment.*
 5. The body `(+ x y)` looks up `x` in `((y . 1) (x . 2))` and returns 3.
 
 ## 2. Joining arguments to the caller's environment
+*Answers: what the scope case return if `apply-closure` extended the caller's environment, and what that makes the language.*
 
+If line 100 extended the caller's environment instead of `saved-env`, `x` would resolve to the nearest binding at call time, `(x, 100)`, and the case would return 101 instead of 3. That makes the language dynamically scoped: a free variable means whatever binding is nearest when the function is called, not where it was written. Line 127 would then capture an evironment that no longer determines how free variables are resolved, defeating the purpose of storing it in the closure.
 
 ## 3. Why CLISP needs `funcall`
+*Answers: why the host needs `funcall` where the toy language doesn't.*
+
+CLISP is a Lisp-2, so variables and functions live in separate namespaces. In `(f 1)`, `f` is looked up as a function, not as the closure held in the variable `f`, so the host needs `funcall` to call it and `#` to pass a function as a value. The toy language has one alist for everything. The application branch evaluates the head with `(eval-expr (car expr) env)`, which goes through `lookup`, so a variable holding a closure is found the same way as any other value and `apply-closure` runs it. `(f 1)` works with no `funcall`.
