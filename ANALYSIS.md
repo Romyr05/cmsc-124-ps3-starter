@@ -1,21 +1,9 @@
 # Environments and the Toy Evaluator
 
-## E3: let
+## 1. Tracing a form and capturing the defining environment
 
-An environment is an association list, and `lookup` takes the first match.
-`extend-env` puts the new pairs in front with `append`. It copies
-only the new pairs and shares the old `env` as its tail, so the caller's list
-is never changed.
-
-`eval-let` evaluates every initializer in the outer `env` first (line 73), and
-only then extends (line 74). That makes the bindings parallel. In
-`(let ((x 1)) (let ((x 2) (y x)) (+ x y)))`, `y` is evaluated while `x` is
-still 1, so the result is 3, not 4. The extended environment is only passed
-down to the body, so it disappears when the body returns.
-
-## E4: closures
-
-Trace the scope case:
+*Answers: trace one form through your own `eval-expr`, and point to the line
+that captures the defining environment.*
 
 ```lisp
 (let ((x 2))
@@ -35,7 +23,7 @@ Trace the scope case:
    caller's environment is never used.
 5. The body `(+ x y)` looks up `x` in `((y . 1) (x . 2))` and returns 3.
 
-If line 100 extended the caller's environment instead, `x` would be found as
-100 and the result would be 101. That would make the language dynamically
-scoped: a free variable would mean whatever binding is nearest at call time,
-not where the function was written.
+## 2. Joining arguments to the caller's environment
+
+
+## 3. Why CLISP needs `funcall`
