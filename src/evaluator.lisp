@@ -60,16 +60,18 @@ OP is the symbol +, -, or *. Signal an error for anything else."
 
 MAPCAR takes two lists and #'CONS pairs them. Build a new list. Do not modify
 ENV, because the caller keeps using it after the extension goes out of scope."
-  (declare (ignore params args env))
-  (error "extend-env is not implemented"))
+  (append (mapcar #'cons params args) env))
 
 (defun eval-let (expr env)
   "Evaluate (let ((name init) ...) body).
 
 Every init is evaluated in ENV before any name is bound, so the bindings happen
 in parallel and an init cannot see a name the same LET introduces."
-  (declare (ignore expr env))
-  (error "eval-let is not implemented"))
+  (let* ((bindings (second expr))
+         (names (mapcar #'car bindings))
+         ;; Every init sees the outer ENV, never a name this LET introduces.
+         (vals (eval-operands (mapcar #'second bindings) env)))
+    (eval-expr (third expr) (extend-env names vals env))))
 
 ;;; E4 -- lambda and application.
 
@@ -80,16 +82,22 @@ Return the list (:closure params body env). ENV is the environment the lambda
 was written in, not the one it will later be called from. Saving the wrong one
 is what makes the difference between 3 and 101 in the case the manual walks
 through."
-  (declare (ignore params body env))
-  (error "make-closure is not implemented"))
+  (list :closure params body env))
 
 (defun apply-closure (closure args)
   "Run CLOSURE on ARGS.
 
 The parameters join the environment the closure captured. Signal an error when
 CLOSURE is not a closure, and when the argument count does not match."
-  (declare (ignore closure args))
-  (error "apply-closure is not implemented"))
+  (unless (and (consp closure) (eq (first closure) :closure))
+    (error "Not a closure: ~S" closure))
+  (let ((params (second closure))
+        (body (third closure))
+        (saved-env (fourth closure)))
+    (unless (= (length params) (length args))
+      (error "Expected ~D arguments, got ~D" (length params) (length args)))
+    ;; Extend the environment the closure captured, not the caller's.
+    (eval-expr body (extend-env params args saved-env))))
 
 ;;; The dispatcher.
 
